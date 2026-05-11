@@ -48,7 +48,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Athenæum — Online Library Management" },
+      { title: "Inside Love — Online Library Management" },
       { name: "description", content: "A modern library management system for cataloging, lending, and member management." },
     ],
     links: [

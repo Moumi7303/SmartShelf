@@ -4,7 +4,7 @@ import { books, loans, members } from "@/lib/library-data";
 import { BookCard } from "@/components/book-card";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Dashboard — Athenæum Library" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Inside Love" }] }),
   component: Dashboard,
 });
 
