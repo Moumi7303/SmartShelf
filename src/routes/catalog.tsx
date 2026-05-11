@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/catalog")({
-  head: () => ({ meta: [{ title: "Catalog — Athenæum Library" }] }),
+  head: () => ({ meta: [{ title: "Catalog — Inside Love" }] }),
   component: Catalog,
 });
 

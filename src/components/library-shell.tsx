@@ -20,7 +20,7 @@ export function LibraryShell() {
             <BookOpen className="h-5 w-5 text-sidebar-primary-foreground" />
           </div>
           <div>
-            <div className="font-display text-xl leading-none">Athenæum</div>
+            <div className="font-display text-xl leading-none">Inside Love</div>
             <div className="text-xs text-sidebar-foreground/60 mt-1">Library System</div>
           </div>
         </div>

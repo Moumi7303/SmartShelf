@@ -3,7 +3,7 @@ import { books, loans } from "@/lib/library-data";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/loans")({
-  head: () => ({ meta: [{ title: "Loans — Athenæum Library" }] }),
+  head: () => ({ meta: [{ title: "Loans — Inside Love" }] }),
   component: Loans,
 });
 
