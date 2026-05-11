@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { LibraryShell } from "@/components/library-shell";
 
 function NotFoundComponent() {
   return (
@@ -76,7 +77,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <LibraryShell />
     </QueryClientProvider>
   );
 }
