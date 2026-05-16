@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 
 export const Route = createFileRoute("/members")({
-  head: () => ({ meta: [{ title: "Members — Inside Love" }] }),
+  head: () => ({ meta: [{ title: "Members — SmartShelf" }] }),
   component: Members,
 });
 

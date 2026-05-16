@@ -7,6 +7,7 @@
 @theme inline {
   --font-display: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -44,70 +45,107 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Library aesthetic: deep forest green + warm cream + brass */
-  --background: oklch(0.97 0.015 85);
-  --foreground: oklch(0.22 0.04 150);
-  --cream: oklch(0.94 0.025 85);
-  --ink: oklch(0.22 0.04 150);
-  --brass: oklch(0.72 0.13 75);
-  --card: oklch(0.99 0.01 85);
-  --card-foreground: oklch(0.22 0.04 150);
-  --popover: oklch(0.99 0.01 85);
-  --popover-foreground: oklch(0.22 0.04 150);
-  --primary: oklch(0.32 0.06 150);
-  --primary-foreground: oklch(0.96 0.02 85);
-  --secondary: oklch(0.9 0.03 85);
-  --secondary-foreground: oklch(0.22 0.04 150);
-  --muted: oklch(0.92 0.02 85);
-  --muted-foreground: oklch(0.45 0.03 150);
-  --accent: oklch(0.72 0.13 75);
-  --accent-foreground: oklch(0.22 0.04 150);
+  --radius: 0.625rem;
+  /* SmartShelf Enterprise: Deep teal + warm gold accent */
+  --background: oklch(0.97 0.012 220);
+  --foreground: oklch(0.15 0.03 230);
+  --cream: oklch(0.95 0.015 85);
+  --ink: oklch(0.15 0.03 230);
+  --brass: oklch(0.72 0.14 75);
+  --card: oklch(0.99 0.005 220);
+  --card-foreground: oklch(0.15 0.03 230);
+  --popover: oklch(0.99 0.005 220);
+  --popover-foreground: oklch(0.15 0.03 230);
+  --primary: oklch(0.30 0.06 230);
+  --primary-foreground: oklch(0.97 0.01 220);
+  --secondary: oklch(0.93 0.015 220);
+  --secondary-foreground: oklch(0.15 0.03 230);
+  --muted: oklch(0.94 0.01 220);
+  --muted-foreground: oklch(0.50 0.02 230);
+  --accent: oklch(0.72 0.14 75);
+  --accent-foreground: oklch(0.15 0.03 230);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(0.98 0.01 85);
-  --border: oklch(0.85 0.02 85);
-  --input: oklch(0.88 0.02 85);
-  --ring: oklch(0.32 0.06 150);
-  --sidebar: oklch(0.28 0.05 150);
-  --sidebar-foreground: oklch(0.94 0.025 85);
-  --sidebar-primary: oklch(0.72 0.13 75);
-  --sidebar-primary-foreground: oklch(0.22 0.04 150);
-  --sidebar-accent: oklch(0.34 0.06 150);
-  --sidebar-accent-foreground: oklch(0.94 0.025 85);
-  --sidebar-border: oklch(0.34 0.06 150);
-  --sidebar-ring: oklch(0.72 0.13 75);
+  --border: oklch(0.88 0.01 220);
+  --input: oklch(0.90 0.01 220);
+  --ring: oklch(0.30 0.06 230);
+  --sidebar: oklch(0.18 0.04 230);
+  --sidebar-foreground: oklch(0.94 0.01 220);
+  --sidebar-primary: oklch(0.72 0.14 75);
+  --sidebar-primary-foreground: oklch(0.15 0.03 230);
+  --sidebar-accent: oklch(0.24 0.04 230);
+  --sidebar-accent-foreground: oklch(0.94 0.01 220);
+  --sidebar-border: oklch(0.26 0.04 230);
+  --sidebar-ring: oklch(0.72 0.14 75);
 }
 
 .dark {
-  --background: oklch(0.18 0.03 150);
-  --foreground: oklch(0.94 0.025 85);
-  --card: oklch(0.22 0.04 150);
-  --card-foreground: oklch(0.94 0.025 85);
-  --popover: oklch(0.22 0.04 150);
-  --popover-foreground: oklch(0.94 0.025 85);
-  --primary: oklch(0.72 0.13 75);
-  --primary-foreground: oklch(0.22 0.04 150);
-  --secondary: oklch(0.28 0.05 150);
-  --secondary-foreground: oklch(0.94 0.025 85);
-  --muted: oklch(0.28 0.05 150);
-  --muted-foreground: oklch(0.7 0.03 85);
-  --accent: oklch(0.72 0.13 75);
-  --accent-foreground: oklch(0.22 0.04 150);
-  --border: oklch(0.32 0.05 150);
-  --input: oklch(0.32 0.05 150);
-  --ring: oklch(0.72 0.13 75);
+  --background: oklch(0.13 0.02 230);
+  --foreground: oklch(0.93 0.01 220);
+  --card: oklch(0.17 0.025 230);
+  --card-foreground: oklch(0.93 0.01 220);
+  --popover: oklch(0.17 0.025 230);
+  --popover-foreground: oklch(0.93 0.01 220);
+  --primary: oklch(0.72 0.14 75);
+  --primary-foreground: oklch(0.13 0.02 230);
+  --secondary: oklch(0.22 0.03 230);
+  --secondary-foreground: oklch(0.93 0.01 220);
+  --muted: oklch(0.22 0.03 230);
+  --muted-foreground: oklch(0.65 0.02 220);
+  --accent: oklch(0.72 0.14 75);
+  --accent-foreground: oklch(0.13 0.02 230);
+  --border: oklch(0.25 0.03 230);
+  --input: oklch(0.25 0.03 230);
+  --ring: oklch(0.72 0.14 75);
+  --sidebar: oklch(0.10 0.02 230);
+  --sidebar-foreground: oklch(0.90 0.01 220);
+  --sidebar-primary: oklch(0.72 0.14 75);
+  --sidebar-primary-foreground: oklch(0.10 0.02 230);
+  --sidebar-accent: oklch(0.16 0.025 230);
+  --sidebar-accent-foreground: oklch(0.90 0.01 220);
+  --sidebar-border: oklch(0.20 0.025 230);
+  --sidebar-ring: oklch(0.72 0.14 75);
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     background-image:
-      radial-gradient(ellipse at top left, color-mix(in oklab, var(--brass) 8%, transparent), transparent 60%),
-      radial-gradient(ellipse at bottom right, color-mix(in oklab, var(--primary) 8%, transparent), transparent 60%);
+      radial-gradient(ellipse at top left, color-mix(in oklab, var(--brass) 6%, transparent), transparent 60%),
+      radial-gradient(ellipse at bottom right, color-mix(in oklab, var(--primary) 6%, transparent), transparent 60%);
     background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: color-mix(in oklab, var(--color-card) 70%, transparent);
+  backdrop-filter: blur(12px) saturate(1.5);
+  border: 1px solid color-mix(in oklab, var(--color-border) 50%, transparent);
+}
+
+/* Gradient header utility */
+.gradient-header {
+  background: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 80%, var(--color-accent)));
+}
+
+/* Smooth page transitions */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+main > * {
+  animation: fadeIn 0.3s ease-out;
 }

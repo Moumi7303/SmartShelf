@@ -10,6 +10,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { LibraryShell } from "@/components/library-shell";
+import { ThemeProvider } from "@/components/theme-provider";
 
 function NotFoundComponent() {
   return (
@@ -19,7 +20,7 @@ function NotFoundComponent() {
         <h2 className="mt-4 text-xl font-semibold">This shelf is empty</h2>
         <p className="mt-2 text-sm text-muted-foreground">The page you're looking for doesn't exist.</p>
         <Link to="/" className="mt-6 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          Back to library
+          Back to SmartShelf
         </Link>
       </div>
     </div>
@@ -48,14 +49,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Inside Love — Online Library Management" },
-      { name: "description", content: "A modern library management system for cataloging, lending, and member management." },
+      { title: "SmartShelf | University Library Management System" },
+      { name: "description", content: "SmartShelf — Smart Multi-Branch University Library Management System for cataloging, lending, branch management and analytics." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -66,7 +67,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head><HeadContent /></head>
       <body>{children}<Scripts /></body>
     </html>
@@ -76,8 +77,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
-    <QueryClientProvider client={queryClient}>
-      <LibraryShell />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <LibraryShell />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

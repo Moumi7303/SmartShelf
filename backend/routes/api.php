@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
+
+// Public Auth Routes
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
+
+// Protected Routes
+Route::middleware(['auth:sanctum', 'active_user'])->group(function () {
+    
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::get('/user', fn (Request $request) => $request->user()->load('role.permissions'));
+
+    // Role & Permission Management (Super Admin & Admins with explicit permission)
+    Route::middleware(['permission:roles.view'])->group(function () {
+        Route::get('/roles', [RoleController::class, 'index']);
+        Route::get('/roles/{role}', [RoleController::class, 'show']);
+    });
+    
+    Route::middleware(['permission:roles.create'])->post('/roles', [RoleController::class, 'store']);
+    Route::middleware(['permission:roles.edit'])->put('/roles/{role}', [RoleController::class, 'update']);
+    Route::middleware(['permission:roles.delete'])->delete('/roles/{role}', [RoleController::class, 'destroy']);
+
+    Route::middleware(['permission:permissions.view'])->get('/permissions', [PermissionController::class, 'index']);
+    Route::middleware(['permission:permissions.create'])->post('/permissions', [PermissionController::class, 'store']);
+    Route::middleware(['permission:permissions.edit'])->put('/permissions/{permission}', [PermissionController::class, 'update']);
+    Route::middleware(['permission:permissions.delete'])->delete('/permissions/{permission}', [PermissionController::class, 'destroy']);
+
+    // Books & Catalog (Using branch_access middleware to restrict branch-specific cataloging if necessary)
+    Route::middleware(['branch_access'])->group(function () {
+        // We will build standard Resource Controllers for these later
+        // E.g. Route::apiResource('books', BookController::class)->middleware('permission:books.view');
+    });
+
+});

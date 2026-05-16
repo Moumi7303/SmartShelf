@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MembersRouteImport } from './routes/members'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoansRouteImport } from './routes/loans'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const MembersRoute = MembersRouteImport.update({
   id: '/members',
   path: '/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoansRoute = LoansRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/loans': typeof LoansRoute
+  '/login': typeof LoginRoute
   '/members': typeof MembersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/loans': typeof LoansRoute
+  '/login': typeof LoginRoute
   '/members': typeof MembersRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/loans': typeof LoansRoute
+  '/login': typeof LoginRoute
   '/members': typeof MembersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalog' | '/loans' | '/members'
+  fullPaths: '/' | '/catalog' | '/loans' | '/login' | '/members'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalog' | '/loans' | '/members'
-  id: '__root__' | '/' | '/catalog' | '/loans' | '/members'
+  to: '/' | '/catalog' | '/loans' | '/login' | '/members'
+  id: '__root__' | '/' | '/catalog' | '/loans' | '/login' | '/members'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
   LoansRoute: typeof LoansRoute
+  LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/members'
       fullPath: '/members'
       preLoaderRoute: typeof MembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/loans': {
@@ -106,8 +123,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
   LoansRoute: LoansRoute,
+  LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
