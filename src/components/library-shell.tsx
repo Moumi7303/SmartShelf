@@ -11,11 +11,12 @@ import {
   Moon,
   Menu,
   X,
-  LogIn,
+  LogOut,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
+import { useAuth } from "@/lib/auth-context";
 import { useState } from "react";
 
 const nav = [
@@ -71,12 +72,28 @@ function SmartShelfLogo({ collapsed = false }: { collapsed?: boolean }) {
   );
 }
 
+function userInitials(name?: string): string {
+  if (!name) return "U";
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 export function LibraryShell() {
+  const { isAuthenticated, user, logout } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { resolvedTheme, setTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
+
+  // For unauthenticated users, render only the page content (auth pages have their own layouts)
+  if (!isAuthenticated) {
+    return <Outlet />;
+  }
 
   return (
     <div className="min-h-screen flex w-full">
@@ -107,13 +124,13 @@ export function LibraryShell() {
 
         {/* Sidebar bottom */}
         <div className="p-4 space-y-3">
-          <Link
-            to="/login"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200"
+          <button
+            onClick={logout}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200 w-full"
           >
-            <LogIn className="h-4 w-4" />
-            Sign In
-          </Link>
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </button>
           <div className="rounded-lg bg-sidebar-accent/60 p-4">
             <div className="font-display text-sm">Need help?</div>
             <p className="text-xs text-sidebar-foreground/60 mt-1">
@@ -162,7 +179,17 @@ export function LibraryShell() {
                 );
               })}
             </nav>
-            <div className="p-4 border-t border-sidebar-border">
+            <div className="p-4 space-y-3 border-t border-sidebar-border">
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  logout();
+                }}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200 w-full"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
               <p className="text-[10px] text-sidebar-foreground/30 text-center">
                 © {new Date().getFullYear()} SmartShelf — All Rights Reserved
               </p>
@@ -206,7 +233,7 @@ export function LibraryShell() {
               <Bell className="h-4 w-4" />
             </Button>
             <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground flex items-center justify-center font-medium text-sm shadow-sm">
-              SA
+              {userInitials(user?.name)}
             </div>
           </div>
         </header>

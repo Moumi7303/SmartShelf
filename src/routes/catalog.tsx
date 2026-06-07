@@ -4,6 +4,7 @@ import { books, genres } from "@/lib/library-data";
 import { BookCard } from "@/components/book-card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { AuthGuard } from "@/components/auth-guard";
 
 export const Route = createFileRoute("/catalog")({
   head: () => ({ meta: [{ title: "Catalog — SmartShelf" }] }),
@@ -21,6 +22,7 @@ function Catalog() {
   }), [genre, q]);
 
   return (
+    <AuthGuard>
     <div className="space-y-8">
       <div>
         <div className="text-xs uppercase tracking-[0.2em] text-accent">Catalog</div>
@@ -54,5 +56,6 @@ function Catalog() {
         </div>
       )}
     </div>
+    </AuthGuard>
   );
 }

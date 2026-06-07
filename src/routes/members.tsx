@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { members } from "@/lib/library-data";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
+import { AuthGuard } from "@/components/auth-guard";
 
 export const Route = createFileRoute("/members")({
   head: () => ({ meta: [{ title: "Members — SmartShelf" }] }),
@@ -14,6 +15,7 @@ function avatar(name: string) {
 
 function Members() {
   return (
+    <AuthGuard>
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
@@ -49,5 +51,6 @@ function Members() {
         ))}
       </div>
     </div>
+    </AuthGuard>
   );
 }

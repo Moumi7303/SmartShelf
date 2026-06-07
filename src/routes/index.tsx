@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, Users, BookMarked, TrendingUp, ArrowRight, Clock, Building2, BarChart3 } from "lucide-react";
+import { BookOpen, Users, BookMarked, TrendingUp, ArrowRight, Clock, BarChart3 } from "lucide-react";
 import { books, loans, members } from "@/lib/library-data";
 import { BookCard } from "@/components/book-card";
+import { AuthGuard } from "@/components/auth-guard";
+import { useAuth } from "@/lib/auth-context";
 
-export const Route = createFileRoute("/")(({
+export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Dashboard — SmartShelf" }] }),
-  component: Dashboard,
-}));
+  component: DashboardPage,
+});
 
 function Stat({ icon: Icon, label, value, hint }: any) {
   return (
@@ -23,27 +25,32 @@ function Stat({ icon: Icon, label, value, hint }: any) {
   );
 }
 
+function DashboardPage() {
+  return (
+    <AuthGuard>
+      <Dashboard />
+    </AuthGuard>
+  );
+}
+
 function Dashboard() {
+  const { user } = useAuth();
   const overdue = loans.filter((l) => l.status === "overdue");
   const active = loans.filter((l) => l.status === "active");
   const featured = books.slice(0, 4);
 
   return (
     <div className="space-y-10">
-      {/* Hero section */}
+      {/* Personalized greeting */}
       <section className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground p-8 md:p-12">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_80%_20%,var(--brass),transparent_50%)]" />
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_20%_80%,oklch(0.6_0.15_250),transparent_40%)]" />
         <div className="relative max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-3 py-1 text-xs uppercase tracking-[0.15em] text-accent border border-white/10">
-            <Building2 className="h-3 w-3" />
-            SmartShelf Dashboard
-          </div>
-          <h1 className="mt-4 font-display text-4xl md:text-5xl leading-tight">
-            Welcome to SmartShelf
+          <h1 className="font-display text-4xl md:text-5xl leading-tight">
+            Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
           </h1>
           <p className="mt-3 text-primary-foreground/75 max-w-lg">
-            Your enterprise university library management system. Track loans, manage collections, and monitor multi-branch analytics — all in one place.
+            Here's what's happening across your library network today. Track loans, manage collections, and monitor multi-branch analytics.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link to="/catalog" className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground hover:opacity-90 shadow-lg shadow-accent/20 transition-all">

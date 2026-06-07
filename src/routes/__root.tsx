@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { LibraryShell } from "@/components/library-shell";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/lib/auth-context";
 
 function NotFoundComponent() {
   return (
@@ -90,9 +91,11 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <LibraryShell />
-      </QueryClientProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <LibraryShell />
+        </QueryClientProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

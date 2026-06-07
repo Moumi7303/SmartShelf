@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -19,7 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens, Auditable;
 
     /**
      * Get the attributes that should be cast.
@@ -78,6 +79,11 @@ class User extends Authenticatable
         return $query->whereHas('role', fn ($q) => $q->where('name', $roleName));
     }
 
+    public function scopeByBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
     // ─── Accessors ────────────────────────────────────────────────
 
     public function getFormattedNameAttribute(): string
@@ -95,11 +101,24 @@ class User extends Authenticatable
         };
     }
 
+    public function getInitialsAttribute(): string
+    {
+        return collect(explode(' ', $this->name))
+            ->map(fn ($part) => strtoupper(substr($part, 0, 1)))
+            ->take(2)
+            ->join('');
+    }
+
     // ─── RBAC Helpers ─────────────────────────────────────────────
 
     public function hasRole(string $roleName): bool
     {
         return $this->role && $this->role->name === $roleName;
+    }
+
+    public function hasAnyRole(array $roleNames): bool
+    {
+        return $this->role && in_array($this->role->name, $roleNames);
     }
 
     public function hasPermission(string $permissionName): bool
@@ -122,5 +141,43 @@ class User extends Authenticatable
         }
         return false;
     }
-}
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    public function isBranchAdmin(): bool
+    {
+        return $this->hasRole('branch_admin');
+    }
+
+    public function isLibrarian(): bool
+    {
+        return $this->hasRole('librarian');
+    }
+
+    public function isStudentMember(): bool
+    {
+        return $this->hasRole('student_member');
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->hasAnyRole(['super_admin', 'branch_admin', 'librarian']);
+    }
+
+    /**
+     * Get the dashboard route name based on user role.
+     */
+    public function getDashboardRoute(): string
+    {
+        return match ($this->role?->name) {
+            'super_admin'    => 'dashboard.super-admin',
+            'branch_admin'   => 'dashboard.branch-admin',
+            'librarian'      => 'dashboard.librarian',
+            'student_member' => 'dashboard.student',
+            default          => 'dashboard',
+        };
+    }
+}

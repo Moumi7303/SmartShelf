@@ -13,17 +13,19 @@ class AuditLog extends Model
     protected $fillable = [
         'user_id',
         'action',
-        'module',
-        'ip_address',
+        'model_type',
+        'model_id',
         'old_values',
         'new_values',
+        'ip_address',
+        'user_agent',
     ];
 
     protected function casts(): array
     {
         return [
-            'old_values' => 'json',
-            'new_values' => 'json',
+            'old_values' => 'array',
+            'new_values' => 'array',
         ];
     }
 
@@ -36,9 +38,9 @@ class AuditLog extends Model
 
     // ─── Scopes ───────────────────────────────────────────────────
 
-    public function scopeByModule($query, string $module)
+    public function scopeByUser($query, int $userId)
     {
-        return $query->where('module', $module);
+        return $query->where('user_id', $userId);
     }
 
     public function scopeByAction($query, string $action)
@@ -46,9 +48,9 @@ class AuditLog extends Model
         return $query->where('action', $action);
     }
 
-    public function scopeByUser($query, int $userId)
+    public function scopeByModel($query, string $modelType)
     {
-        return $query->where('user_id', $userId);
+        return $query->where('model_type', $modelType);
     }
 
     public function scopeRecent($query, int $days = 30)
@@ -56,22 +58,15 @@ class AuditLog extends Model
         return $query->where('created_at', '>=', now()->subDays($days));
     }
 
-    // ─── Static Helpers ───────────────────────────────────────────
+    // ─── Accessors ────────────────────────────────────────────────
 
-    public static function log(
-        string $action,
-        string $module,
-        ?int $userId = null,
-        ?array $oldValues = null,
-        ?array $newValues = null,
-    ): static {
-        return static::create([
-            'user_id' => $userId ?? auth()->id(),
-            'action' => $action,
-            'module' => $module,
-            'ip_address' => request()->ip(),
-            'old_values' => $oldValues,
-            'new_values' => $newValues,
-        ]);
+    public function getModelNameAttribute(): string
+    {
+        return class_basename($this->model_type);
+    }
+
+    public function getFormattedActionAttribute(): string
+    {
+        return ucfirst($this->action);
     }
 }

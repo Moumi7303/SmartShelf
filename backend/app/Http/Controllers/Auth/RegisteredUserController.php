@@ -4,19 +4,31 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Role;
-use App\Models\Branch;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Handle an incoming registration request.
+     * Display the registration view.
      */
-    public function store(Request $request): JsonResponse
+    public function create(): View
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws ValidationException
+     */
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -24,21 +36,20 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $guestRole = Role::where('name', 'guest_user')->first();
-        $defaultBranch = Branch::first();
+        $guestRole = \App\Models\Role::where('name', 'guest_user')->first();
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $guestRole ? $guestRole->id : 5, // Default to guest_user
-            'branch_id' => $defaultBranch ? $defaultBranch->id : 1, // Fallback to first branch
+            'role_id' => $guestRole ? $guestRole->id : 1, // Fallback to 1 if not seeded
             'status' => 'active',
         ]);
 
-        return response()->json([
-            'message' => 'Registration successful. You can now login.',
-            'user' => $user,
-        ], 201);
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(route('dashboard', absolute: false));
     }
 }

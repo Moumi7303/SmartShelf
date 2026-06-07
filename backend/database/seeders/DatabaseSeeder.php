@@ -2,25 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
-     *
-     * Order matters — seeders are run sequentially to satisfy
-     * foreign key constraints:
-     *   1. Roles (required by users)
-     *   2. Permissions + role_permissions pivot
-     *   3. Branches (required by users)
-     *   4. Admin user (requires roles + branches)
-     *   5. Categories, Authors, Publishers (standalone reference data)
-     *   6. Books (requires categories, authors, publishers)
-     *   7. Members (requires users)
+     * Order matters: roles → permissions → branches → admin → categories → settings → sample data
      */
     public function run(): void
     {
@@ -34,6 +22,7 @@ class DatabaseSeeder extends Seeder
             PublisherSeeder::class,
             BookSeeder::class,
             MemberSeeder::class,
+            SettingsSeeder::class,
         ]);
     }
 }

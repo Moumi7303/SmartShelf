@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { books, loans } from "@/lib/library-data";
 import { Button } from "@/components/ui/button";
+import { AuthGuard } from "@/components/auth-guard";
 
 export const Route = createFileRoute("/loans")({
   head: () => ({ meta: [{ title: "Loans — SmartShelf" }] }),
@@ -15,6 +16,7 @@ const statusStyles: Record<string, string> = {
 
 function Loans() {
   return (
+    <AuthGuard>
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
@@ -68,5 +70,6 @@ function Loans() {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 }

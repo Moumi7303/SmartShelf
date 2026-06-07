@@ -12,6 +12,7 @@ class RolesSeeder extends Seeder
 
     /**
      * Seed the roles table with default SmartShelf system roles.
+     * Matches RBAC spec: super_admin, branch_admin, librarian, student_member, guest_user
      */
     public function run(): void
     {
@@ -25,8 +26,8 @@ class RolesSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'name' => 'admin',
-                'description' => 'Administrative access — manages library operations within assigned branch.',
+                'name' => 'branch_admin',
+                'description' => 'Branch administrator — manages library operations within assigned branch.',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
@@ -37,14 +38,14 @@ class RolesSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'name' => 'assistant',
-                'description' => 'Library assistant — limited access for basic circulation tasks.',
+                'name' => 'student_member',
+                'description' => 'Library member — can browse catalog, view loans, make reservations, and download eBooks.',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'name' => 'member',
-                'description' => 'Library member — can browse catalog, view loans, and make reservations.',
+                'name' => 'guest_user',
+                'description' => 'Guest — limited read-only access to browse the public catalog.',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],

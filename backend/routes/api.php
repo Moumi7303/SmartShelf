@@ -4,18 +4,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 
 // Public Auth Routes
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
-Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/register', [RegisteredUserController::class, 'store']);
+
+// Password Reset (Guest)
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
+Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 
 // Protected Routes
 Route::middleware(['auth:sanctum', 'active_user'])->group(function () {
     
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
     Route::get('/user', fn (Request $request) => $request->user()->load('role.permissions'));
+
+    // Email Verification
+    Route::post('/email/resend', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return response()->json(['message' => 'Verification link sent!']);
+    });
 
     // Role & Permission Management (Super Admin & Admins with explicit permission)
     Route::middleware(['permission:roles.view'])->group(function () {
