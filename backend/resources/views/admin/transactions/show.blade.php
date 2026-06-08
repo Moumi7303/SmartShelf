@@ -52,7 +52,7 @@
                         </div>
                         <div class="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-700">
                             <dt class="text-sm text-slate-500">Branch Location</dt>
-                            <dd class="text-sm font-medium text-slate-900 dark:text-white">{{ $transaction->branch->name }}</dd>
+                            <dd class="text-sm font-medium text-slate-900 dark:text-white">{{ $transaction->branch?->name ?? 'Unknown Branch' }}</dd>
                         </div>
                         <div class="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-700">
                             <dt class="text-sm text-slate-500">Issued Date</dt>
@@ -86,11 +86,11 @@
                     </div>
                     <div class="p-6 flex items-start">
                         <div class="flex-shrink-0 h-14 w-14 rounded-full bg-brand/10 flex items-center justify-center border border-brand/20">
-                            <span class="text-brand font-bold text-xl">{{ $transaction->member->user->initials }}</span>
+                            <span class="text-brand font-bold text-xl">{{ $transaction->member?->user?->initials ?? '?' }}</span>
                         </div>
                         <div class="ml-4 flex-1">
-                            <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $transaction->member->user->name }}</h4>
-                            <p class="text-sm font-mono text-slate-500 mb-2">{{ $transaction->member->membership_id }}</p>
+                            <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $transaction->member?->user?->name ?? 'Unknown Member' }}</h4>
+                            <p class="text-sm font-mono text-slate-500 mb-2">{{ $transaction->member?->membership_id ?? 'N/A' }}</p>
                             <a href="{{ route('admin.members.show', $transaction->member) }}" class="text-sm text-brand hover:text-brand-light font-medium">View Full Profile &rarr;</a>
                         </div>
                     </div>
@@ -103,21 +103,23 @@
                     </div>
                     <div class="p-6 flex items-start">
                         <div class="h-20 w-14 bg-slate-200 dark:bg-slate-700 rounded overflow-hidden flex-shrink-0 border border-slate-300 dark:border-slate-600">
-                            @if($transaction->bookCopy->book->cover_image)
+                            @if($transaction->bookCopy?->book?->cover_image)
                                 <img src="{{ Storage::url($transaction->bookCopy->book->cover_image) }}" class="w-full h-full object-cover">
                             @endif
                         </div>
                         <div class="ml-4 flex-1">
-                            <h4 class="text-md font-bold text-slate-900 dark:text-white leading-tight mb-1">{{ $transaction->bookCopy->book->title }}</h4>
-                            <p class="text-sm text-slate-500 mb-2">By {{ $transaction->bookCopy->book->author->name }}</p>
+                            <h4 class="text-md font-bold text-slate-900 dark:text-white leading-tight mb-1">{{ $transaction->bookCopy?->book?->title ?? 'Unknown Book' }}</h4>
+                            <p class="text-sm text-slate-500 mb-2">By {{ $transaction->bookCopy?->book?->author?->name ?? 'Unknown Author' }}</p>
                             
                             <div class="bg-slate-50 dark:bg-slate-800 p-2 rounded text-xs mt-2 border border-slate-100 dark:border-slate-700">
                                 <span class="text-slate-500 uppercase">Barcode:</span>
-                                <span class="font-mono font-bold ml-1 text-slate-900 dark:text-white">{{ $transaction->bookCopy->barcode }}</span>
+                                <span class="font-mono font-bold ml-1 text-slate-900 dark:text-white">{{ $transaction->bookCopy?->barcode ?? 'N/A' }}</span>
                             </div>
                             
                             <div class="mt-3">
-                                <a href="{{ route('admin.books.show', $transaction->bookCopy->book) }}" class="text-sm text-brand hover:text-brand-light font-medium">View Catalog Entry &rarr;</a>
+                                @if($transaction->bookCopy?->book)
+                                    <a href="{{ route('admin.books.show', $transaction->bookCopy->book) }}" class="text-sm text-brand hover:text-brand-light font-medium">View Catalog Entry &rarr;</a>
+                                @endif
                             </div>
                         </div>
                     </div>

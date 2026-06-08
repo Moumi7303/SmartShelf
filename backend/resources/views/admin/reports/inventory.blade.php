@@ -15,7 +15,7 @@
         <form action="{{ route('admin.reports.inventory') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
                 <label for="branch_id" class="label-field">Branch</label>
-                <select name="branch_id" id="branch_id" class="input-field">
+                <select name="branch_id" id="branch_id" class="input-field" onchange="this.form.submit()">
                     <option value="">All Branches</option>
                     @foreach($branches as $branch)
                         <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <label for="category_id" class="label-field">Category</label>
-                <select name="category_id" id="category_id" class="input-field">
+                <select name="category_id" id="category_id" class="input-field" onchange="this.form.submit()">
                     <option value="">All Categories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>

@@ -20,7 +20,7 @@
             </form>
         </div>
 
-        <div class="glass-card overflow-hidden">
+        <div id="table-container" class="glass-card overflow-hidden">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
@@ -41,7 +41,7 @@
                             <td class="px-6 py-4 text-sm text-slate-500">{{ $ebook->download_count }}</td>
                             <td class="px-6 py-4 text-sm text-slate-500 capitalize">{{ str_replace('_', ' ', $ebook->access_level) }}</td>
                             <td class="px-6 py-4 text-right space-x-3">
-                                <a href="{{ route('ebooks.download', $ebook) }}" class="text-brand hover:text-brand-dark">Download</a>
+                                <a href="{{ route('admin.ebooks.download', $ebook) }}" class="text-brand hover:text-brand-dark">Download</a>
                                 @can('books.delete')
                                     <form action="{{ route('admin.ebooks.destroy', $ebook) }}" method="POST" class="inline-block" onsubmit="return confirm('Delete this eBook?');">
                                         @csrf

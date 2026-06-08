@@ -65,9 +65,13 @@ class Fine extends Model
 
     // ─── Accessors ────────────────────────────────────────────────
 
+    public function getPaidAmountAttribute(): float
+    {
+        return (float) $this->payments()->sum('amount');
+    }
+
     public function getRemainingAmountAttribute(): float
     {
-        $paid = (float) $this->payments()->sum('amount');
-        return round((float) $this->total_amount - $paid, 2);
+        return round((float) $this->total_amount - $this->paid_amount, 2);
     }
 }

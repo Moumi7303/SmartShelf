@@ -23,7 +23,7 @@
             </div>
             
             <div class="w-full md:w-48">
-                <select name="status" class="input-field" onchange="this.form.submit()">
+                <select name="status" class="input-field">
                     <option value="">All Statuses</option>
                     <option value="available" {{ request('status') === 'available' ? 'selected' : '' }}>Available</option>
                     <option value="issued" {{ request('status') === 'issued' ? 'selected' : '' }}>Issued</option>
@@ -41,7 +41,7 @@
         </form>
     </div>
 
-    <div class="glass-card overflow-hidden">
+    <div id="table-container" class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead class="bg-slate-50 dark:bg-slate-800/50">

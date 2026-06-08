@@ -19,7 +19,22 @@ class BookController extends Controller
         $books = $this->bookService->getBooks($request->only(['search', 'category_id', 'branch_id', 'status', 'sort_by', 'sort_dir']));
         $categories = Category::orderBy('name')->get();
 
-        return view('admin.books.index', compact('books', 'categories'));
+        // Build availability grouped by book and branch
+        $availability = [];
+        $copies = \App\Models\BookCopy::whereIn('book_id', $books->pluck('id'))->get();
+        foreach ($books as $book) {
+            $bookCopies = $copies->where('book_id', $book->id);
+            $byBranch = [];
+            foreach ($bookCopies->groupBy('branch_id') as $branchId => $branchCopies) {
+                $byBranch[$branchId] = [
+                    'available' => $branchCopies->where('availability_status', 'available')->count(),
+                    'total' => $branchCopies->count(),
+                ];
+            }
+            $availability[$book->id] = $byBranch;
+        }
+
+        return view('admin.books.index', compact('books', 'categories', 'availability'));
     }
 
     public function create()
@@ -56,7 +71,15 @@ class BookController extends Controller
     public function show(Book $book)
     {
         $book->load(['category', 'author', 'publisher', 'copies.branch', 'ebooks', 'reservations.member.user']);
-        $availability = $this->bookService->checkAvailability($book);
+        
+        $availability = [];
+        foreach ($book->copies->groupBy('branch_id') as $branchId => $copies) {
+            $availability[$branchId] = [
+                'branch_name' => $copies->first()->branch->name,
+                'available' => $copies->where('availability_status', 'available')->count(),
+                'total' => $copies->count(),
+            ];
+        }
 
         return view('admin.books.show', compact('book', 'availability'));
     }

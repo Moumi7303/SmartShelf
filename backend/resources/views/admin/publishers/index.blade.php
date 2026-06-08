@@ -20,7 +20,7 @@
             </form>
         </div>
 
-        <div class="glass-card overflow-hidden">
+        <div id="table-container" class="glass-card overflow-hidden">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">

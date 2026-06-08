@@ -1,10 +1,10 @@
-<div x-data="{ sidebarOpen: false }" @open-sidebar.window="sidebarOpen = true" class="flex-shrink-0 z-20">
+<div x-data="{ sidebarOpen: false }" @open-sidebar.window="sidebarOpen = true" class="flex-shrink-0 z-20 h-full">
     
     <!-- Mobile sidebar backdrop -->
     <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 md:hidden" @click="sidebarOpen = false"></div>
 
     <!-- Sidebar -->
-    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed md:static inset-y-0 left-0 w-64 bg-slate-900 dark:bg-slate-950 text-slate-300 transition-transform duration-300 ease-in-out z-50 flex flex-col md:translate-x-0 border-r border-slate-800">
+    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed md:static inset-y-0 left-0 w-64 h-full bg-slate-900 dark:bg-slate-950 text-slate-300 transition-transform duration-300 ease-in-out z-50 flex flex-col md:translate-x-0 border-r border-slate-800">
         
         <!-- Logo -->
         <div class="h-16 flex items-center px-6 bg-slate-950/50 border-b border-slate-800 shrink-0">

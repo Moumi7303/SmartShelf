@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             BookSeeder::class,
             MemberSeeder::class,
             SettingsSeeder::class,
+            AllTablesSeeder::class,
         ]);
     }
 }

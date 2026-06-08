@@ -32,7 +32,7 @@
             </div>
             
             <div class="w-full md:w-48">
-                <select name="status" class="input-field" onchange="this.form.submit()">
+                <select name="status" class="input-field">
                     <option value="">All Statuses</option>
                     <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
                     <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Paid in Full</option>
@@ -49,7 +49,7 @@
         </form>
     </div>
 
-    <div class="glass-card overflow-hidden" x-data="{ 
+    <div id="table-container" class="glass-card overflow-hidden" x-data="{ 
         showPaymentModal: false, 
         currentFine: null,
         amountToPay: 0,

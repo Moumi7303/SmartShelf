@@ -27,7 +27,7 @@
                 </div>
                 
                 <div class="w-full md:w-48">
-                    <select name="role_id" class="input-field w-full" onchange="this.form.submit()">
+                    <select name="role_id" class="input-field w-full">
                         <option value="">All Roles</option>
                         @foreach($roles as $role)
                             <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>
@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="w-full md:w-48">
-                    <select name="status" class="input-field w-full" onchange="this.form.submit()">
+                    <select name="status" class="input-field w-full">
                         <option value="">All Statuses</option>
                         <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -56,7 +56,7 @@
         </div>
 
         <!-- Users Table -->
-        <div class="glass-card overflow-hidden">
+        <div id="table-container" class="glass-card overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>

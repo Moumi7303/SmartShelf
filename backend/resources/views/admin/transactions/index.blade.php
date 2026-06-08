@@ -23,7 +23,7 @@
             </div>
             
             <div class="w-full md:w-48">
-                <select name="status" class="input-field" onchange="this.form.submit()">
+                <select name="status" class="input-field">
                     <option value="">All Statuses</option>
                     <option value="issued" {{ request('status') === 'issued' ? 'selected' : '' }}>Issued (Active)</option>
                     <option value="returned" {{ request('status') === 'returned' ? 'selected' : '' }}>Returned</option>
@@ -40,7 +40,7 @@
         </form>
     </div>
 
-    <div class="glass-card overflow-hidden">
+    <div id="table-container" class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead class="bg-slate-50 dark:bg-slate-800/50">
@@ -60,22 +60,22 @@
                                 <a href="{{ route('admin.transactions.show', $transaction) }}" class="text-sm font-medium text-brand dark:text-brand-light hover:underline">
                                     {{ $transaction->transaction_code }}
                                 </a>
-                                <div class="text-xs text-slate-500 mt-1">{{ $transaction->branch->name }}</div>
+                                <div class="text-xs text-slate-500 mt-1">{{ $transaction->branch?->name ?? 'Unknown Branch' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
-                                        {{ $transaction->member->user->initials }}
+                                        {{ $transaction->member?->user?->initials ?? '?' }}
                                     </div>
                                     <div class="ml-3">
-                                        <div class="text-sm font-medium text-slate-900 dark:text-white">{{ $transaction->member->user->name }}</div>
-                                        <div class="text-xs text-slate-500 font-mono">{{ $transaction->member->membership_id }}</div>
+                                        <div class="text-sm font-medium text-slate-900 dark:text-white">{{ $transaction->member?->user?->name ?? 'Unknown Member' }}</div>
+                                        <div class="text-xs text-slate-500 font-mono">{{ $transaction->member?->membership_id ?? 'N/A' }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-slate-900 dark:text-white">{{ Str::limit($transaction->bookCopy->book->title, 40) }}</div>
-                                <div class="text-xs text-slate-500 font-mono mt-1">Barcode: {{ $transaction->bookCopy->barcode }}</div>
+                                <div class="text-sm text-slate-900 dark:text-white">{{ Str::limit($transaction->bookCopy?->book?->title ?? 'Unknown', 40) }}</div>
+                                <div class="text-xs text-slate-500 font-mono mt-1">Barcode: {{ $transaction->bookCopy?->barcode ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-xs text-slate-500 mb-1">Out: {{ $transaction->issue_date->format('M d, Y') }}</div>

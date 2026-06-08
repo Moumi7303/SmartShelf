@@ -30,7 +30,8 @@
         </form>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div id="table-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @forelse($authors as $author)
             <div class="glass-card flex flex-col items-center p-6 text-center hover:shadow-md transition-shadow">
                 <div class="h-20 w-20 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-4 text-3xl font-display font-bold text-slate-400">
@@ -58,4 +59,5 @@
             {{ $authors->links() }}
         </div>
     @endif
+    </div>
 </x-app-layout>

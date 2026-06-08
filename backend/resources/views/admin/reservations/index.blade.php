@@ -23,7 +23,7 @@
             </div>
             
             <div class="w-full md:w-48">
-                <select name="status" class="input-field" onchange="this.form.submit()">
+                <select name="status" class="input-field">
                     <option value="">All Statuses</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved (Ready)</option>
@@ -41,7 +41,7 @@
         </form>
     </div>
 
-    <div class="glass-card overflow-hidden">
+    <div id="table-container" class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead class="bg-slate-50 dark:bg-slate-800/50">
@@ -59,23 +59,23 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
-                                        {{ $reservation->member->user->initials }}
+                                        {{ $reservation->member->user?->initials ?? '?' }}
                                     </div>
                                     <div class="ml-3">
-                                        <div class="text-sm font-medium text-slate-900 dark:text-white">{{ $reservation->member->user->name }}</div>
+                                        <div class="text-sm font-medium text-slate-900 dark:text-white">{{ $reservation->member->user?->name ?? 'Unknown' }}</div>
                                         <div class="text-xs text-slate-500 font-mono">{{ $reservation->member->membership_id }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-slate-900 dark:text-white">{{ Str::limit($reservation->book->title, 40) }}</div>
-                                <div class="text-xs text-slate-500 mt-1">{{ $reservation->book->author->name }}</div>
+                                <div class="text-sm text-slate-900 dark:text-white">{{ Str::limit($reservation->book?->title ?? 'Unknown', 40) }}</div>
+                                <div class="text-xs text-slate-500 mt-1">{{ $reservation->book?->author?->name ?? 'Unknown' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-xs text-slate-500 mb-1">Req: {{ $reservation->reservation_date->format('M d, Y') }}</div>
                                 @if(in_array($reservation->status, ['pending', 'approved']))
-                                    <div class="text-xs font-medium {{ $reservation->expiration_date->isPast() ? 'text-red-600' : 'text-slate-700 dark:text-slate-300' }}">
-                                        Exp: {{ $reservation->expiration_date->format('M d, Y') }}
+                                    <div class="text-xs font-medium {{ $reservation->expiry_date?->isPast() ? 'text-red-600' : 'text-slate-700 dark:text-slate-300' }}">
+                                        Exp: {{ $reservation->expiry_date?->format('M d, Y') }}
                                     </div>
                                 @endif
                             </td>

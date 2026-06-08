@@ -23,7 +23,7 @@
             </div>
             
             <div class="w-full md:w-64">
-                <select name="category_id" class="input-field" onchange="this.form.submit()">
+                <select name="category_id" class="input-field">
                     <option value="">All Categories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
         </form>
     </div>
 
-    <div class="glass-card overflow-hidden">
+    <div id="table-container" class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead class="bg-slate-50 dark:bg-slate-800/50">

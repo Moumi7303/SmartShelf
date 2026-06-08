@@ -30,7 +30,8 @@
         </form>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div id="table-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @forelse($categories as $category)
             <div class="glass-card flex flex-col p-6 hover:shadow-md transition-shadow relative overflow-hidden group">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -65,4 +66,5 @@
             {{ $categories->links() }}
         </div>
     @endif
+    </div>
 </x-app-layout>

@@ -104,18 +104,32 @@ class FineService
      */
     public function getStats(?int $branchId = null): array
     {
-        $query = Fine::query();
+        $fineQuery = Fine::query();
 
         if ($branchId) {
-            $query->whereHas('transaction.bookCopy', fn ($q) => $q->where('branch_id', $branchId));
+            $fineQuery->whereHas('transaction.bookCopy', fn ($q) => $q->where('branch_id', $branchId));
         }
 
+        $totalWaived = (clone $fineQuery)->where('status', 'waived')->sum('total_amount');
+        
+        $paymentQuery = Payment::query();
+        if ($branchId) {
+            $paymentQuery->whereHas('fine.transaction.bookCopy', fn ($q) => $q->where('branch_id', $branchId));
+        }
+        $totalCollected = (float) $paymentQuery->sum('amount');
+        
+        $totalFineAmount = (clone $fineQuery)->where('status', '!=', 'waived')->sum('total_amount');
+        $totalUnpaid = max(0, (float) $totalFineAmount - $totalCollected);
+
         return [
-            'total_fines'     => $query->count(),
-            'unpaid_count'    => (clone $query)->unpaid()->count(),
-            'unpaid_amount'   => (clone $query)->unpaid()->sum('total_amount'),
-            'paid_amount'     => (clone $query)->paid()->sum('total_amount'),
-            'waived_count'    => (clone $query)->where('status', 'waived')->count(),
+            'total_collected' => $totalCollected,
+            'total_unpaid'    => $totalUnpaid,
+            'total_waived'    => (float) $totalWaived,
+            'total_fines'     => $fineQuery->count(),
+            'unpaid_count'    => (clone $fineQuery)->unpaid()->count(),
+            'unpaid_amount'   => (clone $fineQuery)->unpaid()->sum('total_amount'),
+            'paid_amount'     => (clone $fineQuery)->paid()->sum('total_amount'),
+            'waived_count'    => (clone $fineQuery)->where('status', 'waived')->count(),
         ];
     }
 }

@@ -63,8 +63,8 @@
                         </div>
                         <div class="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-700">
                             <dt class="text-sm text-slate-500">Expiration Date</dt>
-                            <dd class="text-sm font-medium {{ $reservation->expiration_date->isPast() && in_array($reservation->status, ['pending', 'approved']) ? 'text-red-600 font-bold' : 'text-slate-900 dark:text-white' }}">
-                                {{ $reservation->expiration_date->format('F d, Y') }}
+                            <dd class="text-sm font-medium {{ $reservation->expiry_date?->isPast() && in_array($reservation->status, ['pending', 'approved']) ? 'text-red-600 font-bold' : 'text-slate-900 dark:text-white' }}">
+                                {{ $reservation->expiry_date?->format('F d, Y') ?? 'N/A' }}
                             </dd>
                         </div>
                         <div class="flex justify-between items-center pt-2">
@@ -83,11 +83,11 @@
                     </div>
                     <div class="p-6 flex items-start">
                         <div class="flex-shrink-0 h-14 w-14 rounded-full bg-brand/10 flex items-center justify-center border border-brand/20">
-                            <span class="text-brand font-bold text-xl">{{ $reservation->member->user->initials }}</span>
+                            <span class="text-brand font-bold text-xl">{{ $reservation->member?->user?->initials ?? '?' }}</span>
                         </div>
                         <div class="ml-4 flex-1">
-                            <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $reservation->member->user->name }}</h4>
-                            <p class="text-sm font-mono text-slate-500 mb-2">{{ $reservation->member->membership_id }}</p>
+                            <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $reservation->member?->user?->name ?? 'Unknown Member' }}</h4>
+                            <p class="text-sm font-mono text-slate-500 mb-2">{{ $reservation->member?->membership_id ?? 'N/A' }}</p>
                             <a href="{{ route('admin.members.show', $reservation->member) }}" class="text-sm text-brand hover:text-brand-light font-medium">View Full Profile &rarr;</a>
                         </div>
                     </div>
@@ -100,26 +100,28 @@
                     </div>
                     <div class="p-6 flex items-start">
                         <div class="h-20 w-14 bg-slate-200 dark:bg-slate-700 rounded overflow-hidden flex-shrink-0 border border-slate-300 dark:border-slate-600">
-                            @if($reservation->book->cover_image)
+                            @if($reservation->book?->cover_image)
                                 <img src="{{ Storage::url($reservation->book->cover_image) }}" class="w-full h-full object-cover">
                             @endif
                         </div>
                         <div class="ml-4 flex-1">
-                            <h4 class="text-md font-bold text-slate-900 dark:text-white leading-tight mb-1">{{ $reservation->book->title }}</h4>
-                            <p class="text-sm text-slate-500 mb-2">By {{ $reservation->book->author->name }}</p>
+                            <h4 class="text-md font-bold text-slate-900 dark:text-white leading-tight mb-1">{{ $reservation->book?->title ?? 'Unknown Book' }}</h4>
+                            <p class="text-sm text-slate-500 mb-2">By {{ $reservation->book?->author?->name ?? 'Unknown Author' }}</p>
                             
                             <div class="bg-slate-50 dark:bg-slate-800 p-2 rounded text-xs mt-2 border border-slate-100 dark:border-slate-700">
                                 @php
-                                    $availableCopies = $reservation->book->copies->where('status', 'available')->count();
+                                    $availableCopies = $reservation->book?->copies?->where('availability_status', 'available')->count() ?? 0;
                                 @endphp
                                 <span class="text-slate-500 uppercase">Availability:</span>
                                 <span class="font-bold ml-1 {{ $availableCopies > 0 ? 'text-emerald-600' : 'text-red-600' }}">
-                                    {{ $availableCopies }} / {{ $reservation->book->copies->count() }} Copies
+                                    {{ $availableCopies }} / {{ $reservation->book?->copies?->count() ?? 0 }} Copies
                                 </span>
                             </div>
                             
                             <div class="mt-3">
-                                <a href="{{ route('admin.books.show', $reservation->book) }}" class="text-sm text-brand hover:text-brand-light font-medium">View Catalog Entry &rarr;</a>
+                                @if($reservation->book)
+                                    <a href="{{ route('admin.books.show', $reservation->book) }}" class="text-sm text-brand hover:text-brand-light font-medium">View Catalog Entry &rarr;</a>
+                                @endif
                             </div>
                         </div>
                     </div>

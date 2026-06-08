@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="w-full md:w-48">
-                    <select name="status" class="input-field w-full" onchange="this.form.submit()">
+                    <select name="status" class="input-field w-full">
                         <option value="">All Statuses</option>
                         <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -44,7 +44,8 @@
         </div>
 
         <!-- Branches List -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="table-container">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($branches as $branch)
                 <div class="glass-card flex flex-col relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div class="p-6 flex-1">
@@ -136,5 +137,6 @@
                 {{ $branches->links() }}
             </div>
         @endif
+        </div>
     </div>
 </x-app-layout>

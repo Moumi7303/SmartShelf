@@ -14,7 +14,8 @@ class FineController extends Controller
     public function index(Request $request)
     {
         $fines = $this->fineService->getFines($request->only(['status', 'member_id', 'search']));
-        return view('admin.fines.index', compact('fines'));
+        $stats = $this->fineService->getStats();
+        return view('admin.fines.index', compact('fines', 'stats'));
     }
 
     public function show(Fine $fine)
