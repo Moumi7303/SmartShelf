@@ -12,6 +12,8 @@ import {
   Menu,
   X,
   LogOut,
+  PenTool,
+  TabletSmartphone,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,9 @@ const nav = [
   { to: "/catalog", label: "Catalog", icon: Library },
   { to: "/loans", label: "Loans", icon: BookMarked },
   { to: "/members", label: "Members", icon: Users },
+  { to: "/books", label: "Manage Books", icon: BookOpen },
+  { to: "/authors", label: "Authors", icon: PenTool },
+  { to: "/ebooks", label: "E-Books", icon: TabletSmartphone },
 ];
 
 function SmartShelfLogo({ collapsed = false }: { collapsed?: boolean }) {

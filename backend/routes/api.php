@@ -7,6 +7,12 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\EbookController;
+use App\Http\Controllers\MemberController;
 
 // Public Auth Routes
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -45,8 +51,22 @@ Route::middleware(['auth:sanctum', 'active_user'])->group(function () {
 
     // Books & Catalog (Using branch_access middleware to restrict branch-specific cataloging if necessary)
     Route::middleware(['branch_access'])->group(function () {
-        // We will build standard Resource Controllers for these later
-        // E.g. Route::apiResource('books', BookController::class)->middleware('permission:books.view');
+        Route::apiResource('books', BookController::class);
+        Route::apiResource('authors', AuthorController::class);
+        Route::apiResource('categories', CategoryController::class);
+        
+        // Transactions & Loans
+        Route::get('transactions', [TransactionController::class, 'index']);
+        Route::post('transactions/checkout', [TransactionController::class, 'checkout']);
+        Route::post('transactions/{transaction}/return', [TransactionController::class, 'returnBook']);
+        
+        // Ebooks
+        Route::get('ebooks', [EbookController::class, 'index']);
+        Route::get('ebooks/{ebook}/download', [EbookController::class, 'download']);
+        Route::get('ebooks/{ebook}/stream', [EbookController::class, 'stream']);
+        
+        // Members
+        Route::apiResource('members', MemberController::class)->only(['index', 'show']);
     });
 
 });

@@ -26,8 +26,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'role_id' => \App\Models\Role::first() ?? \App\Models\Role::factory(),
-            'branch_id' => \App\Models\Branch::first() ?? \App\Models\Branch::factory(),
+            'role_id' => \App\Models\Role::factory(),
+            'branch_id' => \App\Models\Branch::factory(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->phoneNumber(),

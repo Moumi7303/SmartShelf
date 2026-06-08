@@ -16,8 +16,12 @@ import { Route as MembersRouteImport } from './routes/members'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoansRouteImport } from './routes/loans'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as EbooksRouteImport } from './routes/ebooks'
 import { Route as CatalogRouteImport } from './routes/catalog'
+import { Route as BooksRouteImport } from './routes/books'
+import { Route as AuthorsRouteImport } from './routes/authors'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EbooksEbookIdReadRouteImport } from './routes/ebooks.$ebookId.read'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -54,9 +58,24 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EbooksRoute = EbooksRouteImport.update({
+  id: '/ebooks',
+  path: '/ebooks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CatalogRoute = CatalogRouteImport.update({
   id: '/catalog',
   path: '/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BooksRoute = BooksRouteImport.update({
+  id: '/books',
+  path: '/books',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthorsRoute = AuthorsRouteImport.update({
+  id: '/authors',
+  path: '/authors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -64,10 +83,18 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EbooksEbookIdReadRoute = EbooksEbookIdReadRouteImport.update({
+  id: '/$ebookId/read',
+  path: '/$ebookId/read',
+  getParentRoute: () => EbooksRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/authors': typeof AuthorsRoute
+  '/books': typeof BooksRoute
   '/catalog': typeof CatalogRoute
+  '/ebooks': typeof EbooksRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/loans': typeof LoansRoute
   '/login': typeof LoginRoute
@@ -75,10 +102,14 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/ebooks/$ebookId/read': typeof EbooksEbookIdReadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/authors': typeof AuthorsRoute
+  '/books': typeof BooksRoute
   '/catalog': typeof CatalogRoute
+  '/ebooks': typeof EbooksRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/loans': typeof LoansRoute
   '/login': typeof LoginRoute
@@ -86,11 +117,15 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/ebooks/$ebookId/read': typeof EbooksEbookIdReadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/authors': typeof AuthorsRoute
+  '/books': typeof BooksRoute
   '/catalog': typeof CatalogRoute
+  '/ebooks': typeof EbooksRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/loans': typeof LoansRoute
   '/login': typeof LoginRoute
@@ -98,12 +133,16 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/ebooks/$ebookId/read': typeof EbooksEbookIdReadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/authors'
+    | '/books'
     | '/catalog'
+    | '/ebooks'
     | '/forgot-password'
     | '/loans'
     | '/login'
@@ -111,10 +150,14 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/verify-email'
+    | '/ebooks/$ebookId/read'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/authors'
+    | '/books'
     | '/catalog'
+    | '/ebooks'
     | '/forgot-password'
     | '/loans'
     | '/login'
@@ -122,10 +165,14 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/verify-email'
+    | '/ebooks/$ebookId/read'
   id:
     | '__root__'
     | '/'
+    | '/authors'
+    | '/books'
     | '/catalog'
+    | '/ebooks'
     | '/forgot-password'
     | '/loans'
     | '/login'
@@ -133,11 +180,15 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/verify-email'
+    | '/ebooks/$ebookId/read'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthorsRoute: typeof AuthorsRoute
+  BooksRoute: typeof BooksRoute
   CatalogRoute: typeof CatalogRoute
+  EbooksRoute: typeof EbooksRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoansRoute: typeof LoansRoute
   LoginRoute: typeof LoginRoute
@@ -198,11 +249,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ebooks': {
+      id: '/ebooks'
+      path: '/ebooks'
+      fullPath: '/ebooks'
+      preLoaderRoute: typeof EbooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/catalog': {
       id: '/catalog'
       path: '/catalog'
       fullPath: '/catalog'
       preLoaderRoute: typeof CatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/books': {
+      id: '/books'
+      path: '/books'
+      fullPath: '/books'
+      preLoaderRoute: typeof BooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/authors': {
+      id: '/authors'
+      path: '/authors'
+      fullPath: '/authors'
+      preLoaderRoute: typeof AuthorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -212,12 +284,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ebooks/$ebookId/read': {
+      id: '/ebooks/$ebookId/read'
+      path: '/$ebookId/read'
+      fullPath: '/ebooks/$ebookId/read'
+      preLoaderRoute: typeof EbooksEbookIdReadRouteImport
+      parentRoute: typeof EbooksRoute
+    }
   }
 }
 
+interface EbooksRouteChildren {
+  EbooksEbookIdReadRoute: typeof EbooksEbookIdReadRoute
+}
+
+const EbooksRouteChildren: EbooksRouteChildren = {
+  EbooksEbookIdReadRoute: EbooksEbookIdReadRoute,
+}
+
+const EbooksRouteWithChildren =
+  EbooksRoute._addFileChildren(EbooksRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthorsRoute: AuthorsRoute,
+  BooksRoute: BooksRoute,
   CatalogRoute: CatalogRoute,
+  EbooksRoute: EbooksRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoansRoute: LoansRoute,
   LoginRoute: LoginRoute,
@@ -229,13 +322,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

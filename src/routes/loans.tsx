@@ -1,20 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { books, loans } from "@/lib/library-data";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { AuthGuard } from "@/components/auth-guard";
+import { apiFetch } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/loans")({
   head: () => ({ meta: [{ title: "Loans — SmartShelf" }] }),
   component: Loans,
 });
 
+interface Transaction {
+  id: number;
+  transaction_code: string;
+  member?: { name: string };
+  book_copy?: { book?: { title: string } };
+  issue_date: string;
+  due_date: string;
+  status: string;
+}
+
+interface PaginatedTransactions {
+  data: Transaction[];
+  total: number;
+}
+
 const statusStyles: Record<string, string> = {
-  active: "bg-primary/10 text-primary",
+  issued: "bg-primary/10 text-primary",
   overdue: "bg-destructive/10 text-destructive",
   returned: "bg-muted text-muted-foreground",
 };
 
 function Loans() {
+  const { data: transactionsData, isLoading } = useQuery<PaginatedTransactions>({
+    queryKey: ["transactions"],
+    queryFn: () => apiFetch("/transactions"),
+  });
+
+  const loans = transactionsData?.data || [];
+  const activeCount = loans.filter(l => l.status !== "returned").length;
+  const overdueCount = loans.filter(l => l.status === "overdue").length;
+
   return (
     <AuthGuard>
     <div className="space-y-8">
@@ -22,7 +47,7 @@ function Loans() {
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-accent">Circulation</div>
           <h1 className="font-display text-4xl mt-2">Loans & returns</h1>
-          <p className="text-muted-foreground mt-2">{loans.filter(l => l.status !== "returned").length} active loans, {loans.filter(l => l.status === "overdue").length} overdue.</p>
+          <p className="text-muted-foreground mt-2">{activeCount} active loans, {overdueCount} overdue.</p>
         </div>
         <Button>Issue new loan</Button>
       </div>
@@ -42,29 +67,33 @@ function Loans() {
               </tr>
             </thead>
             <tbody>
-              {loans.map((l) => {
-                const book = books.find((b) => b.id === l.bookId);
-                return (
-                  <tr key={l.id} className="border-t border-border hover:bg-muted/20">
-                    <td className="px-5 py-4 font-mono text-xs">{l.id}</td>
-                    <td className="px-5 py-4">
-                      <div className="font-medium">{book?.title}</div>
-                      <div className="text-xs text-muted-foreground">{book?.author}</div>
-                    </td>
-                    <td className="px-5 py-4">{l.member}</td>
-                    <td className="px-5 py-4 text-muted-foreground">{l.borrowed}</td>
-                    <td className="px-5 py-4 text-muted-foreground">{l.due}</td>
-                    <td className="px-5 py-4">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${statusStyles[l.status]}`}>{l.status}</span>
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      <button className="text-xs text-primary hover:underline">
-                        {l.status === "returned" ? "View" : "Mark returned"}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="px-5 py-8 text-center text-muted-foreground">Loading transactions...</td>
+                </tr>
+              ) : loans.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-5 py-8 text-center text-muted-foreground">No transactions found.</td>
+                </tr>
+              ) : loans.map((l) => (
+                <tr key={l.id} className="border-t border-border hover:bg-muted/20">
+                  <td className="px-5 py-4 font-mono text-xs">{l.transaction_code}</td>
+                  <td className="px-5 py-4">
+                    <div className="font-medium">{l.book_copy?.book?.title || 'Unknown Book'}</div>
+                  </td>
+                  <td className="px-5 py-4">{l.member?.name || 'Unknown'}</td>
+                  <td className="px-5 py-4 text-muted-foreground">{new Date(l.issue_date).toLocaleDateString()}</td>
+                  <td className="px-5 py-4 text-muted-foreground">{new Date(l.due_date).toLocaleDateString()}</td>
+                  <td className="px-5 py-4">
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${statusStyles[l.status] || "bg-muted text-muted-foreground"}`}>{l.status}</span>
+                  </td>
+                  <td className="px-5 py-4 text-right">
+                    <button className="text-xs text-primary hover:underline">
+                      {l.status === "returned" ? "View" : "Mark returned"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

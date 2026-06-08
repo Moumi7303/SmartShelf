@@ -52,7 +52,7 @@ const API_BASE = "/api"; // proxied to Laravel backend
 
 const TOKEN_KEY = "smartshelf-token";
 
-function getToken(): string | null {
+export function getToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -65,7 +65,7 @@ function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-async function apiFetch<T = unknown>(
+export async function apiFetch<T = unknown>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {

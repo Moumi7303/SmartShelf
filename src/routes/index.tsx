@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, Users, BookMarked, TrendingUp, ArrowRight, Clock, BarChart3 } from "lucide-react";
-import { books, loans, members } from "@/lib/library-data";
-import { BookCard } from "@/components/book-card";
+import { useQuery } from "@tanstack/react-query";
+import { BookCard, type ApiBook } from "@/components/book-card";
 import { AuthGuard } from "@/components/auth-guard";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth, apiFetch } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Dashboard — SmartShelf" }] }),
@@ -35,8 +35,27 @@ function DashboardPage() {
 
 function Dashboard() {
   const { user } = useAuth();
+  
+  const { data: booksData } = useQuery<{data: ApiBook[], total: number}>({
+    queryKey: ["books"],
+    queryFn: () => apiFetch("/books"),
+  });
+
+  const { data: txData } = useQuery<{data: any[], total: number}>({
+    queryKey: ["transactions"],
+    queryFn: () => apiFetch("/transactions"),
+  });
+
+  const { data: membersData } = useQuery<{data: any[], total: number}>({
+    queryKey: ["members"],
+    queryFn: () => apiFetch("/members"),
+  });
+
+  const books = booksData?.data || [];
+  const loans = txData?.data || [];
+  
   const overdue = loans.filter((l) => l.status === "overdue");
-  const active = loans.filter((l) => l.status === "active");
+  const active = loans.filter((l) => l.status === "issued");
   const featured = books.slice(0, 4);
 
   return (
@@ -65,10 +84,10 @@ function Dashboard() {
 
       {/* Stats grid */}
       <section className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Stat icon={BookOpen} label="Total Books" value={books.reduce((a, b) => a + b.total, 0)} hint={`${books.length} unique titles`} />
-        <Stat icon={BookMarked} label="Active Loans" value={active.length} hint="Due within 14 days" />
+        <Stat icon={BookOpen} label="Total Books" value={booksData?.total || 0} hint={`Across the catalog`} />
+        <Stat icon={BookMarked} label="Active Loans" value={active.length} hint="Currently checked out" />
         <Stat icon={Clock} label="Overdue" value={overdue.length} hint="Needs follow-up" />
-        <Stat icon={Users} label="Members" value={members.length} hint="+2 this month" />
+        <Stat icon={Users} label="Members" value={membersData?.total || 0} hint="Registered readers" />
       </section>
 
       {/* Featured books */}
@@ -94,16 +113,15 @@ function Dashboard() {
           </div>
           <ul className="space-y-3">
             {loans.slice(0, 5).map((l) => {
-              const book = books.find((b) => b.id === l.bookId);
               return (
                 <li key={l.id} className="flex items-center justify-between text-sm border-b border-border last:border-0 pb-3 last:pb-0">
                   <div>
-                    <div className="font-medium">{book?.title}</div>
-                    <div className="text-xs text-muted-foreground">{l.member} · due {l.due}</div>
+                    <div className="font-medium">{l.book_copy?.book?.title}</div>
+                    <div className="text-xs text-muted-foreground">{l.member?.name || 'Unknown'} · due {new Date(l.due_date).toLocaleDateString()}</div>
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
+                  <span className={`text-xs px-2 py-1 rounded-full capitalize ${
                     l.status === "overdue" ? "bg-destructive/10 text-destructive" :
-                    l.status === "active" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                    l.status === "issued" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                   }`}>{l.status}</span>
                 </li>
               );

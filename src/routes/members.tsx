@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { members } from "@/lib/library-data";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import { AuthGuard } from "@/components/auth-guard";
+import { apiFetch } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/members")({
   head: () => ({ meta: [{ title: "Members — SmartShelf" }] }),
@@ -10,10 +11,35 @@ export const Route = createFileRoute("/members")({
 });
 
 function avatar(name: string) {
-  return name.split(" ").map((n) => n[0]).slice(0, 2).join("");
+  if (!name) return "??";
+  return name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+}
+
+interface MemberData {
+  id: number;
+  membership_id: string;
+  membership_status: string;
+  joined_at: string;
+  user: {
+    name: string;
+    email: string;
+  };
+}
+
+interface PaginatedMembers {
+  data: MemberData[];
+  total: number;
 }
 
 function Members() {
+  const { data: membersData, isLoading } = useQuery<PaginatedMembers>({
+    queryKey: ["members"],
+    queryFn: () => apiFetch("/members"),
+  });
+
+  const members = membersData?.data || [];
+  const total = membersData?.total || 0;
+
   return (
     <AuthGuard>
     <div className="space-y-8">
@@ -21,35 +47,41 @@ function Members() {
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-accent">Community</div>
           <h1 className="font-display text-4xl mt-2">Members</h1>
-          <p className="text-muted-foreground mt-2">{members.length} registered readers.</p>
+          <p className="text-muted-foreground mt-2">{total} registered readers.</p>
         </div>
         <Button>Register member</Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {members.map((m) => (
-          <div key={m.id} className="rounded-xl border border-border bg-card p-5 hover:border-accent transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground flex items-center justify-center font-medium">
-                {avatar(m.name)}
+      {isLoading ? (
+        <div className="text-center py-20 text-muted-foreground">Loading members...</div>
+      ) : members.length === 0 ? (
+        <div className="text-center py-20 text-muted-foreground">No members found.</div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {members.map((m) => (
+            <div key={m.id} className="rounded-xl border border-border bg-card p-5 hover:border-accent transition-colors">
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground flex items-center justify-center font-medium">
+                  {avatar(m.user?.name)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-display text-lg leading-tight truncate">{m.user?.name || "Unknown"}</div>
+                  <div className="text-xs text-muted-foreground font-mono">{m.membership_id}</div>
+                </div>
+                <span className={`text-xs px-2 py-1 rounded-full capitalize ${m.membership_status === "active" ? "bg-accent/15 text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
+                  {m.membership_status}
+                </span>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-display text-lg leading-tight">{m.name}</div>
-                <div className="text-xs text-muted-foreground font-mono">{m.id}</div>
+              <div className="mt-4 pt-4 border-t border-border space-y-2 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground truncate">
+                  <Mail className="h-3.5 w-3.5 shrink-0" /> {m.user?.email}
+                </div>
+                <div className="text-xs text-muted-foreground">Member since {new Date(m.joined_at).toLocaleDateString()}</div>
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full ${m.active > 0 ? "bg-accent/15 text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
-                {m.active} active
-              </span>
             </div>
-            <div className="mt-4 pt-4 border-t border-border space-y-2 text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Mail className="h-3.5 w-3.5" /> {m.email}
-              </div>
-              <div className="text-xs text-muted-foreground">Member since {m.joined}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
     </AuthGuard>
   );
